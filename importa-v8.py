@@ -187,7 +187,7 @@ def insert_vm(cur, v: Dict[str, Any], host_id: Optional[int], ts: datetime) -> i
     return cur.lastrowid
 
 
-# --- INÍCIO: CÓDIGO ADICIONADO DE importa-vnetwork.py ---
+# --- CÓDIGO ADICIONADO DE importa-vnetwork.py ---
 # Função para inserir informações de rede.
 def insert_network(cur, n: Dict[str, Any], vm_id: Optional[int], ts: datetime) -> int:
     sql = """

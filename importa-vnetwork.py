@@ -126,13 +126,9 @@ def insert_network(cur, n: Dict[str, Any], vm_id: Optional[int], ts: datetime) -
         to_str(n.get('vNetworkAdapter')),
         to_str(n.get('vNetworkName')),
         to_str(n.get('vNetworkSwitch')),
-        # --- CORREÇÃO 2: Usar to_int para a coluna booleana ---
         to_int(n.get('vNetworkConnected')),
-        # --- FIM DI BLOCO ---
         to_str(n.get('vNetworkIP4Address')),
-        # --- INT, OTRO BOLEAN --- 
         to_int(n.get('vNetworkDirectPathIO')),
-        # --- FIM DO BLOCO --- 
         to_str(n.get('vNetworkDatacenter')),
         to_str(n.get('vNetworkCluster')),
         to_str(n.get('vNetworkHost')),

@@ -187,8 +187,6 @@ def insert_vm(cur, v: Dict[str, Any], host_id: Optional[int], ts: datetime) -> i
     return cur.lastrowid
 
 
-# --- CÓDIGO ADICIONADO DE importa-vnetwork.py ---
-# Função para inserir informações de rede.
 def insert_network(cur, n: Dict[str, Any], vm_id: Optional[int], ts: datetime) -> int:
     sql = """
         INSERT INTO networks (
@@ -216,7 +214,6 @@ def insert_network(cur, n: Dict[str, Any], vm_id: Optional[int], ts: datetime) -
     )
     cur.execute(sql, params)
     return cur.lastrowid
-# --- FIM: CÓDIGO ADICIONADO DE importa-vnetwork.py ---
 
 
 # =========================
@@ -239,12 +236,10 @@ VINFO_COLS = [
     'vInfoHost',
 ]
 
-
 VNETWORK_COLS = [
     'vNetworkVMName', 'vNetworkPowerstate', 'vNetworkNic', 'vNetworkAdapter', 'vNetworkName', 'vNetworkSwitch', 'vNetworkConnected', 'vNetworkIP4Address',
     'vNetworkDirectPathIO', 'vNetworkDatacenter', 'vNetworkCluster', 'vNetworkHost', 'vNetworkFolder', 'vNetworkVISDKServer',
 ]
-
 
 def ler_sheet(path: str, sheet: str, cols: list) -> pd.DataFrame:
     try:

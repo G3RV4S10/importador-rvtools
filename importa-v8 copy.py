@@ -14,11 +14,11 @@ import mysql.connector
 # Configuração
 # =========================
 DB_CONFIG = {
-    'user': os.getenv('DB_USER', 'admin'),
+    'user': os.getenv('DB_USER', 'root'),
     'password': os.getenv('DB_PASS', 'Lab2024!'),
     'host': os.getenv('DB_HOST', '192.168.255.107'),
-    'database': os.getenv('DB_NAME', 'vcenter_teste'),
-    'port': int(os.getenv('DB_PORT', '3306')),
+    'database': os.getenv('DB_NAME', 'testeteste'),
+    'port': int(os.getenv('DB_PORT', '3307')),
     'autocommit': False,
 }
 

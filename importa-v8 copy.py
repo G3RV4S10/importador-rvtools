@@ -16,9 +16,9 @@ import mysql.connector
 DB_CONFIG = {
     'user': os.getenv('DB_USER', 'root'),
     'password': os.getenv('DB_PASS', 'Lab2024!'),
-    'host': os.getenv('DB_HOST', '192.168.255.107'),
-    'database': os.getenv('DB_NAME', 'testeteste'),
-    'port': int(os.getenv('DB_PORT', '3307')),
+    'host': os.getenv('DB_HOST', '192.168.255.253'),
+    'database': os.getenv('DB_NAME', 'vcenter_dataprev'),
+    'port': int(os.getenv('DB_PORT', '3306')),
     'autocommit': False,
 }
 
@@ -365,6 +365,6 @@ def processar_planilhas(diretorio_raiz: str):
 # Execução
 # =========================
 if __name__ == "__main__":
-    diretorio = os.getenv('PLAN_DIR', 'C:/Users/diego.gervasio/Downloads/rvtools')
+    diretorio = os.getenv('PLAN_DIR', 'C:/Users/diego.gervasio/Downloads/previaaaa')
     processar_planilhas(diretorio)
     print("\nProcessamento finalizado.")

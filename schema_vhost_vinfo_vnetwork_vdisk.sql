@@ -1,0 +1,100 @@
+CREATE DATABASE IF NOT EXISTS vcenter_dataprev
+CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+
+USE vcenter_dataprev;
+
+CREATE TABLE IF NOT EXISTS hosts (
+    host_id INT AUTO_INCREMENT PRIMARY KEY,
+    vHostName VARCHAR(255) NOT NULL DEFAULT '',
+    vHostDatacenter VARCHAR(255) NOT NULL DEFAULT '',
+    vHostCluster VARCHAR(255) NOT NULL DEFAULT '',
+    vHostCpuModel VARCHAR(255) NOT NULL DEFAULT '',
+    vHostCpuMhz INT NOT NULL DEFAULT 0,
+    vHostvCPUs INT NOT NULL DEFAULT 0,
+    vHostvRAM BIGINT NOT NULL DEFAULT 0,
+    vHostVMUsedMemory BIGINT NOT NULL DEFAULT 0,
+    vHostNumCpu INT NOT NULL DEFAULT 0,
+    vHostCoresPerCPU INT NOT NULL DEFAULT 0,
+    vHostNumCpuCores INT NOT NULL DEFAULT 0,
+    vHostMemorySize BIGINT NOT NULL DEFAULT 0,
+    vHostFullName VARCHAR(255) NOT NULL DEFAULT '',
+    vHostVendor VARCHAR(255) NOT NULL DEFAULT '',
+    vHostModel VARCHAR(255) NOT NULL DEFAULT '',
+    vHost_tags_AFINIDADE_GH VARCHAR(255) NOT NULL DEFAULT '',
+    vHostVISDKServer VARCHAR(255) NOT NULL DEFAULT '',
+    vHostVMsTotal INT NOT NULL DEFAULT 0,
+    vHostVMs INT NOT NULL DEFAULT 0,
+    data_rvtools DATETIME NOT NULL,
+    INDEX idx_host_lookup (vHostName, vHostVISDKServer)
+);
+
+CREATE TABLE IF NOT EXISTS vms (
+    vm_id INT AUTO_INCREMENT PRIMARY KEY,
+    vInfoVMName VARCHAR(255) NOT NULL DEFAULT '',
+    vInfoGuestHostName VARCHAR(255) NOT NULL DEFAULT '',
+    vInfoDataCenter VARCHAR(255) NOT NULL DEFAULT '',
+    vInfoCluster VARCHAR(255) NOT NULL DEFAULT '',
+    vInfoPowerstate VARCHAR(255) NOT NULL DEFAULT '',
+    vInfoTemplate VARCHAR(255) NOT NULL DEFAULT '',
+    vInfoProvisioned BIGINT NOT NULL DEFAULT 0,
+    vInfoInUse BIGINT NOT NULL DEFAULT 0,
+    vInfoCPUs INT NOT NULL DEFAULT 0,
+    vInfoMemory BIGINT NOT NULL DEFAULT 0,
+    vInfoNICs INT NOT NULL DEFAULT 0,
+    vInfoNumVirtualDisks INT NOT NULL DEFAULT 0,
+    vInfoTotalDiskCapacityMiB BIGINT NOT NULL DEFAULT 0,
+    vInfoVideoRamKiB INT NOT NULL DEFAULT 0,
+    vInfoOS VARCHAR(255) NOT NULL DEFAULT '',
+    vInfoOSTools VARCHAR(255) NOT NULL DEFAULT '',
+    vInfoVISDKServerType VARCHAR(255) NOT NULL DEFAULT '',
+    vInfoVISDKServer VARCHAR(255) NOT NULL DEFAULT '',
+    host_id INT NULL, 
+    data_rvtools DATE NOT NULL,
+    FOREIGN KEY (host_id) REFERENCES hosts(host_id)
+);
+
+
+CREATE TABLE IF NOT EXISTS networks (
+    network_id INT AUTO_INCREMENT PRIMARY KEY,
+    vNetworkVMName VARCHAR(255) NOT NULL DEFAULT '',
+    vNetworkPowerstate VARCHAR(255) NOT NULL DEFAULT '',
+    vNetworkNic VARCHAR(255) NOT NULL DEFAULT '',
+    vNetworkAdapter VARCHAR(255) NOT NULL DEFAULT '',
+    vNetworkName VARCHAR(255) NOT NULL DEFAULT '',
+    vNetworkSwitch VARCHAR(255) NOT NULL DEFAULT '',
+    vNetworkConnected TINYINT(1) NOT NULL DEFAULT 0, 
+    vNetworkIP4Address VARCHAR(2024) NOT NULL DEFAULT '',
+    vNetworkDirectPathIO TINYINT(1) NOT NULL DEFAULT 0, 
+    vNetworkDatacenter VARCHAR(255) NOT NULL DEFAULT '',
+    vNetworkCluster VARCHAR(255) NOT NULL DEFAULT '',
+    vNetworkHost VARCHAR(255) NOT NULL DEFAULT '',
+    vNetworkFolder VARCHAR(255) NOT NULL DEFAULT '',
+    vNetworkVISDKServer VARCHAR(255) NOT NULL DEFAULT '',
+    data_rvtools DATE NOT NULL,
+    INDEX idx_net_vmname (vNetworkVMName)
+);
+
+CREATE TABLE IF NOT EXISTS vdisks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    vDiskVMName VARCHAR(255),
+    vDiskDisk VARCHAR(255),
+    vDiskCapacityMiB BIGINT,
+    vDiskRaw TINYINT(1),
+    vDiskMode VARCHAR(100),
+    vDiskSharingMode VARCHAR(100),
+    vDiskThinProvisioned TINYINT(1),
+    vDiskController VARCHAR(100),
+    vDiskControllerSharedBus VARCHAR(100),
+    vDiskPath TEXT,
+    vDiskRawLunId VARCHAR(255),
+    vDiskRawCompMode VARCHAR(100),
+    vDisk_tags_TagFW VARCHAR(255),
+    `vDisk_tags_avamar.backup.policy` VARCHAR(255),
+    vDiskCluster VARCHAR(255),
+    vDiskHost VARCHAR(255),
+    vDiskOS VARCHAR(255),
+    vDiskVISDKServer VARCHAR(255),
+    data_rvtools DATE,
+    INDEX idx_disk_vmname (vDiskVMName)
+) ENGINE=InnoDB;

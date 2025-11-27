@@ -215,6 +215,38 @@ def insert_network(cur, n: Dict[str, Any], vm_id: Optional[int], ts: datetime) -
     cur.execute(sql, params)
     return cur.lastrowid
 
+def insert_disk(cur, d: Dict[str, Any], vm_id: Optional[int], ts: datetime) -> int:
+    sql = """
+        INSERT INTO vdisks (
+            vDiskVMName, vDiskDisk, vDiskCapacityMiB, vDiskRaw, vDiskMode, vDiskSharingMode, vDiskThinProvisioned, vDiskController,
+             vDiskControllerSharedBus, vDiskPath, vDiskRawLunId, vDiskRawCompMode, vDisk_tags_TagFW, vDisk_tags_avamar.backup.policy,
+             vDiskCluster, vDiskHost, vDiskOS, vDiskVISDKServer, data_rvtools
+        ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+    """
+    params = (
+        to_str(d.get('vDiskVMName')),
+        to_str(d.get('vDiskDisk')),
+        to_int(d.get('vDiskCapacityMiB')),
+        to_int(d.get('vDiskRaw')),
+        to_str(d.get('vDiskMode')),
+        to_str(d.get('vDiskSharingMode')),
+        to_int(d.get('vDiskThinProvisioned')),
+        to_str(d.get('vDiskController')),
+        to_str(d.get('vDiskControllerSharedBus')),
+        to_str(d.get('vDiskPath')),
+        to_str(d.get('vDiskRawLunId')),
+        to_str(d.get('vDiskRawCompMode')),
+        to_str(d.get('vDisk_tags_TagFW')),
+        to_str(d.get('vDisk_tags_avamar.backup.policy')),
+        to_str(d.get('vDiskCluster')),
+        to_str(d.get('vDiskHost')),
+        to_str(d.get('vDiskOS')),
+        to_str(d.get('vDiskVISDKServer')),
+        ts.date(),
+    )
+    cur.execute(sql, params)
+    return cur.lastrowid
+
 
 # =========================
 # Leitura de planilhas
@@ -241,6 +273,13 @@ VNETWORK_COLS = [
     'vNetworkDirectPathIO', 'vNetworkDatacenter', 'vNetworkCluster', 'vNetworkHost', 'vNetworkFolder', 'vNetworkVISDKServer',
 ]
 
+VDISK_COLS = [
+    'vDiskVMName', 'vDiskDisk', 'vDiskCapacityMiB', 'vDiskRaw', 'vDiskMode', 'vDiskSharingMode', 'vDiskThinProvisioned', 'vDiskController',
+    'vDiskControllerSharedBus', 'vDiskPath', 'vDiskRawLunId', 'vDiskRawCompMode', 'vDisk_tags_TagFW', 'vDisk_tags_avamar.backup.policy',
+    'vDiskCluster', 'vDiskHost', 'vDiskOS', 'vDiskVISDKServer',
+]
+
+
 def ler_sheet(path: str, sheet: str, cols: list) -> pd.DataFrame:
     try:
         df = pd.read_excel(path, sheet_name=sheet, engine='openpyxl')
@@ -266,10 +305,11 @@ def importar_arquivo(file_path: str):
         print(f"[AVISO] Data não encontrada no nome do arquivo: {file_path}")
         return
 
-    # --- MODIFICADO: Lê todas as 3 abas ---
+    # --- Lê todas as 3+1 abas, vinfo, vnetwork, vdisk ---
     vhost_df = ler_sheet(file_path, 'vHost', VHOST_COLS)
     vinfo_df = ler_sheet(file_path, 'vInfo', VINFO_COLS)
-    vnetwork_df = ler_sheet(file_path, 'vNetwork', VNETWORK_COLS) # <<< ADICIONADO
+    vnetwork_df = ler_sheet(file_path, 'vNetwork', VNETWORK_COLS)
+    vdisk_df = ler_sheet(file_path, 'vDisk', VDISK_COLS)
 
     conn = connect_db()
     cur = conn.cursor()
@@ -329,6 +369,24 @@ def importar_arquivo(file_path: str):
                 insert_network(cur, network_attrs, None, ts)
         else:
             print("[AVISO] Nenhum dado em vNetwork.")
+
+        # 4) Discos
+        if not vdisk_df.empty:
+            print(f"[INFO] Processando {len(vdisk_df)} registros da aba vDisk...")
+            for _, row in vdisk_df.iterrows():
+                disk_vm_name = to_str(row['vDiskVMName'])
+                disk_vsdk = to_str(row['vDiskVISDKServer'])
+
+                if not disk_vm_name or not disk_vsdk:
+                    print(f"[AVISO] Registro de disco pulado por falta de 'vDiskVMName' ou 'vDiskVISDKServer'.")
+                    continue
+
+                disk_attrs = {col: row[col] for col in VDISK_COLS}
+
+                # Passa None para o vm_id, pois (nesta lógica) não amarrei o ID da VM
+                insert_disk(cur, disk_attrs, None, ts)
+        else:
+            print("[AVISO] Nenhum dado em vDisk.")
        
 
         conn.commit()
@@ -365,6 +423,6 @@ def processar_planilhas(diretorio_raiz: str):
 # Execução
 # =========================
 if __name__ == "__main__":
-    diretorio = os.getenv('PLAN_DIR', 'C:/Users/diego.gervasio/Downloads/previaaaa')
+    diretorio = os.getenv('PLAN_DIR', 'C:/Users/diego.gervasio/Downloads/RVTOOLS')
     processar_planilhas(diretorio)
     print("\nProcessamento finalizado.")

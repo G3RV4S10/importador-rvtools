@@ -35,8 +35,8 @@ CREATE TABLE IF NOT EXISTS vms (
     vInfoGuestHostName VARCHAR(255) NOT NULL DEFAULT '',
     vInfoDataCenter VARCHAR(255) NOT NULL DEFAULT '',
     vInfoCluster VARCHAR(255) NOT NULL DEFAULT '',
-    vInfoPowerstate VARCHAR(255) NOT NULL DEFAULT '',
-    vInfoTemplate VARCHAR(255) NOT NULL DEFAULT '',
+    vInfoPowerstate VARCHAR(50) NOT NULL DEFAULT '',
+    vInfoTemplate VARCHAR(50) NOT NULL DEFAULT '',
     vInfoProvisioned BIGINT NOT NULL DEFAULT 0,
     vInfoInUse BIGINT NOT NULL DEFAULT 0,
     vInfoCPUs INT NOT NULL DEFAULT 0,
@@ -58,13 +58,13 @@ CREATE TABLE IF NOT EXISTS vms (
 CREATE TABLE IF NOT EXISTS networks (
     network_id INT AUTO_INCREMENT PRIMARY KEY,
     vNetworkVMName VARCHAR(255) NOT NULL DEFAULT '',
-    vNetworkPowerstate VARCHAR(255) NOT NULL DEFAULT '',
+    vNetworkName VARCHAR(255) NOT NULL DEFAULT '',
+    vNetworkPowerstate VARCHAR(50) NOT NULL DEFAULT '',
     vNetworkNic VARCHAR(255) NOT NULL DEFAULT '',
     vNetworkAdapter VARCHAR(255) NOT NULL DEFAULT '',
-    vNetworkName VARCHAR(255) NOT NULL DEFAULT '',
     vNetworkSwitch VARCHAR(255) NOT NULL DEFAULT '',
     vNetworkConnected TINYINT(1) NOT NULL DEFAULT 0, 
-    vNetworkIP4Address VARCHAR(2024) NOT NULL DEFAULT '',
+    vNetworkIP4Address VARCHAR(3000) NOT NULL DEFAULT '',
     vNetworkDirectPathIO TINYINT(1) NOT NULL DEFAULT 0, 
     vNetworkDatacenter VARCHAR(255) NOT NULL DEFAULT '',
     vNetworkCluster VARCHAR(255) NOT NULL DEFAULT '',
@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS networks (
     data_rvtools DATE NOT NULL,
     INDEX idx_net_vmname (vNetworkVMName)
 );
+
 
 CREATE TABLE IF NOT EXISTS vdisks (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -90,7 +91,6 @@ CREATE TABLE IF NOT EXISTS vdisks (
     vDiskRawLunId VARCHAR(255),
     vDiskRawCompMode VARCHAR(100),
     vDisk_tags_TagFW VARCHAR(255),
-    `vDisk_tags_avamar.backup.policy` VARCHAR(255),
     vDiskCluster VARCHAR(255),
     vDiskHost VARCHAR(255),
     vDiskOS VARCHAR(255),

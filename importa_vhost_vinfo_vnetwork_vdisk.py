@@ -16,9 +16,9 @@ import mysql.connector
 DB_CONFIG = {
     'user': os.getenv('DB_USER', 'root'),
     'password': os.getenv('DB_PASS', 'Lab2024!'),
-    'host': os.getenv('DB_HOST', '192.168.255.253'),
+    'host': os.getenv('DB_HOST', '192.168.255.107'),
     'database': os.getenv('DB_NAME', 'vcenter_dataprev'),
-    'port': int(os.getenv('DB_PORT', '3306')),
+    'port': int(os.getenv('DB_PORT', '3307')),
     'autocommit': False,
 }
 
@@ -190,17 +190,17 @@ def insert_vm(cur, v: Dict[str, Any], host_id: Optional[int], ts: datetime) -> i
 def insert_network(cur, n: Dict[str, Any], vm_id: Optional[int], ts: datetime) -> int:
     sql = """
         INSERT INTO networks (
-            vNetworkVMName, vNetworkPowerstate, vNetworkNic, vNetworkAdapter, vNetworkName, vNetworkSwitch, vNetworkConnected, vNetworkIP4Address,
+            vNetworkVMName, vNetworkName, vNetworkPowerstate, vNetworkNic, vNetworkAdapter, vNetworkSwitch, vNetworkConnected, vNetworkIP4Address,
             vNetworkDirectPathIO, vNetworkDatacenter, vNetworkCluster, vNetworkHost, vNetworkFolder, vNetworkVISDKServer, data_rvtools
         ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
     """
     
     params = (
         to_str(n.get('vNetworkVMName')),
+        to_str(n.get('vNetworkName')),
         to_str(n.get('vNetworkPowerstate')),
         to_str(n.get('vNetworkNic')),
         to_str(n.get('vNetworkAdapter')),
-        to_str(n.get('vNetworkName')),
         to_str(n.get('vNetworkSwitch')),
         to_int(n.get('vNetworkConnected')),
         to_str(n.get('vNetworkIP4Address')),
@@ -219,9 +219,9 @@ def insert_disk(cur, d: Dict[str, Any], vm_id: Optional[int], ts: datetime) -> i
     sql = """
         INSERT INTO vdisks (
             vDiskVMName, vDiskDisk, vDiskCapacityMiB, vDiskRaw, vDiskMode, vDiskSharingMode, vDiskThinProvisioned, vDiskController,
-             vDiskControllerSharedBus, vDiskPath, vDiskRawLunId, vDiskRawCompMode, vDisk_tags_TagFW, vDisk_tags_avamar.backup.policy,
+             vDiskControllerSharedBus, vDiskPath, vDiskRawLunId, vDiskRawCompMode, vDisk_tags_TagFW,
              vDiskCluster, vDiskHost, vDiskOS, vDiskVISDKServer, data_rvtools
-        ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
     """
     params = (
         to_str(d.get('vDiskVMName')),
@@ -237,7 +237,6 @@ def insert_disk(cur, d: Dict[str, Any], vm_id: Optional[int], ts: datetime) -> i
         to_str(d.get('vDiskRawLunId')),
         to_str(d.get('vDiskRawCompMode')),
         to_str(d.get('vDisk_tags_TagFW')),
-        to_str(d.get('vDisk_tags_avamar.backup.policy')),
         to_str(d.get('vDiskCluster')),
         to_str(d.get('vDiskHost')),
         to_str(d.get('vDiskOS')),
@@ -269,13 +268,13 @@ VINFO_COLS = [
 ]
 
 VNETWORK_COLS = [
-    'vNetworkVMName', 'vNetworkPowerstate', 'vNetworkNic', 'vNetworkAdapter', 'vNetworkName', 'vNetworkSwitch', 'vNetworkConnected', 'vNetworkIP4Address',
+    'vNetworkVMName', 'vNetworkName', 'vNetworkPowerstate', 'vNetworkNic', 'vNetworkAdapter', 'vNetworkSwitch', 'vNetworkConnected', 'vNetworkIP4Address',
     'vNetworkDirectPathIO', 'vNetworkDatacenter', 'vNetworkCluster', 'vNetworkHost', 'vNetworkFolder', 'vNetworkVISDKServer',
 ]
 
 VDISK_COLS = [
     'vDiskVMName', 'vDiskDisk', 'vDiskCapacityMiB', 'vDiskRaw', 'vDiskMode', 'vDiskSharingMode', 'vDiskThinProvisioned', 'vDiskController',
-    'vDiskControllerSharedBus', 'vDiskPath', 'vDiskRawLunId', 'vDiskRawCompMode', 'vDisk_tags_TagFW', 'vDisk_tags_avamar.backup.policy',
+    'vDiskControllerSharedBus', 'vDiskPath', 'vDiskRawLunId', 'vDiskRawCompMode', 'vDisk_tags_TagFW',
     'vDiskCluster', 'vDiskHost', 'vDiskOS', 'vDiskVISDKServer',
 ]
 

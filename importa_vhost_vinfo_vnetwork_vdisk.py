@@ -121,9 +121,9 @@ def insert_host(cur, h: Dict[str, Any], ts: datetime) -> int:
             vHostName, vHostDatacenter, vHostCluster, vHostCpuModel, vHostCpuMhz,
             vHostvCPUs, vHostvRAM, vHostVMUsedMemory,
             vHostNumCpu, vHostCoresPerCPU, vHostNumCpuCores, vHostMemorySize,
-            vHostFullName, vHostVendor, vHostModel, vHost_tags_AFINIDADE_GH, vHostVISDKServer,
+            vHostFullName, vHostVendor, vHostSerialNumber, vHostModel, vHost_tags_AFINIDADE_GH, vHostVISDKServer,
             vHostVMsTotal, vHostVMs, data_rvtools
-        ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
     """
     params = (
         to_str(h.get('vHostName')),
@@ -140,6 +140,7 @@ def insert_host(cur, h: Dict[str, Any], ts: datetime) -> int:
         to_int(h.get('vHostMemorySize')),
         to_str(h.get('vHostFullName')),
         to_str(h.get('vHostVendor')),
+        to_str(h.get('vHostSerialNumber')),
         to_str(h.get('vHostModel')),
         to_str(h.get('vHost_tags_AFINIDADE_GH')),
         to_str(h.get('vHostVISDKServer')),
@@ -254,7 +255,7 @@ VHOST_COLS = [
     'vHostName', 'vHostDatacenter', 'vHostCluster', 'vHostCpuModel', 'vHostCpuMhz',
     'vHostvCPUs', 'vHostvRAM', 'vHostVMUsedMemory',
     'vHostNumCpu', 'vHostCoresPerCPU', 'vHostNumCpuCores', 'vHostMemorySize',
-    'vHostFullName', 'vHostVendor', 'vHostModel', 'vHost_tags_AFINIDADE_GH', 'vHostVISDKServer',
+    'vHostFullName', 'vHostVendor', 'vHostSerialNumber', 'vHostModel', 'vHost_tags_AFINIDADE_GH', 'vHostVISDKServer',
     'vHostVMsTotal', 'vHostVMs',
 ]
 

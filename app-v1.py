@@ -38,7 +38,7 @@ PAGE = """
 </head>
 <body>
   <div class="card">
-    <h2>📁 Importador RVTools</h2>
+    <h2>Importador RVTools</h2>
     <p>O sistema extrairá a data do nome do arquivo (ex: 08012026) e criará a pasta <b>AAAA-MM-DD</b> dentro de <code>RVTOOLS/</code>.</p>
     <form method="post" enctype="multipart/form-data">
       <input type="file" name="file" accept=".zip" required />

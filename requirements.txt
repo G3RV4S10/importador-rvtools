@@ -1,2 +1,6 @@
-mysql_connector_repackaged==0.3.1
-pandas==2.3.3
+mysql_connector_repackaged==0.3.1 # MySQL Connector for Python, repackaged for easier installation - Utilizado para conectar o projeto ao banco de dados MySQL
+pandas==2.3.3 # Data manipulation and analysis library - Utilizado para manipulação de dados e análise
+Flask==3.0.2 # Web framework for building the API - Utilizado para a pagina web do projeto
+#Flask-RESTful==0.3.9 # Extension for building REST APIs with Flask - Utilizado para criar a API RESTful do projeto
+#Flask-Cors==3.0.10 # Extension for handling Cross-Origin Resource Sharing (CORS) in Flask - Utilizado para permitir requisições de diferentes origens na API
+#gunicorn==20.1.0 # WSGI HTTP server for running the Flask application - Utilizado para servir a aplicação Flask em produção

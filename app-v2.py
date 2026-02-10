@@ -125,13 +125,13 @@ def index():
                 thread = threading.Thread(target=run_import_process, args=(target_dir,))
                 thread.start()
 
-                message = (f"✅ Arquivo recebido!\n"
-                           f"📁 Destino: RVTOOLS/{folder_name}\n"
-                           f"⚙️ O banco de dados está sendo atualizado agora.\n"
+                message = (f"Arquivo recebido!\n"
+                           f"Destino: RVTOOLS/{folder_name}\n"
+                           f"O banco de dados está sendo atualizado agora.\n"
                            f"Fique de olho no terminal para a confirmação final.")
 
             except Exception as e:
-                message = f"❌ Erro ao processar arquivo: {str(e)}"
+                message = f"ERRO ao processar arquivo: {str(e)}"
                 
     return render_template_string(PAGE, message=message)
 

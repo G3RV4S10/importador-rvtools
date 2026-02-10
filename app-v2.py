@@ -36,7 +36,7 @@ PAGE = """
 </head>
 <body>
   <div class="card">
-    <h2>🚀 Importador RVTools</h2>
+    <h2>Importador RVTools</h2>
     <p>Upload de relatórios vCenter para processamento em segundo plano.</p>
     
     <form method="post" enctype="multipart/form-data">

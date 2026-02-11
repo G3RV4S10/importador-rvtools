@@ -11,13 +11,14 @@ from flask import Flask, render_template_string, request
 
 # Configurações de diretório
 BASE_DIR = Path(__file__).resolve().parent
-RVTOOLS_ROOT = BASE_DIR / "RVTOOLS"
-IMPORT_SCRIPT = BASE_DIR / "importa_vhost_vinfo_vnetwork_vdisk.py"
-PYTHON_BIN = sys.executable
+RVTOOLS_ROOT = BASE_DIR / "RVTOOLS" # Pasta central solicitada - onde os arquivos serão organizados por data
+ALLOWED_EXT = {".zip"} # Extensão permitida
+IMPORT_SCRIPT = BASE_DIR / "importa_vhost_vinfo_vnetwork_vdisk.py" # Script de importação que será chamado em background
+PYTHON_BIN = sys.executable # Caminho do interpretador Python atual (garante compatibilidade com ambientes virtuais)
 
 app = Flask(__name__)
 
-# HTML com uma estética levemente mais profissional
+# HTML da página, usando render_template_string para manter tudo em um arquivo só. 
 PAGE = """
 <!doctype html>
 <html lang="pt-BR">
@@ -37,7 +38,7 @@ PAGE = """
 <body>
   <div class="card">
     <h2>Importador RVTools</h2>
-    <p>Upload de relatórios vCenter para processamento em segundo plano.</p>
+    <p>Upload de relatórios vCenter para importação em banco de dados.</p>
     
     <form method="post" enctype="multipart/form-data">
       <input type="file" name="file" accept=".zip" required style="margin-bottom: 20px; width: 100%;">
@@ -51,7 +52,7 @@ PAGE = """
     {% endif %}
     
     <div class="footer-info">
-      * O processamento do banco de dados ocorre em background. Acompanhe o terminal do VS Code/WSL para ver o progresso real.
+      * O processamento do banco de dados ocorre em background. Print no Terminal do VS Code/WSL confirmará o sucesso ou falha da importação, além do tempo gasto após o término.
     </div>
   </div>
 </body>
@@ -94,7 +95,9 @@ def run_import_process(target_folder: Path):
         print(f"[TEMPO TOTAL]: {duration:.2f} segundos")
         
         if result.returncode == 0:
-            print(f"[STATUS]: Sucesso! Dados inseridos no MySQL.")
+            print("[STATUS]: Sucesso! Dados inseridos no MySQL.")
+            # ver os print's do script de importação para detalhes do que foi processado
+            print(f"[DETALHES]: {result.stdout}")
         else:
             print(f"[STATUS]: O script retornou um erro (Código {result.returncode})")
             print(f"[ERRO]: {result.stderr}")
@@ -112,6 +115,13 @@ def index():
             try:
                 folder_name = extract_date_from_filename(file.filename)
                 target_dir = RVTOOLS_ROOT / folder_name
+                
+                # Verifica se já existe algum arquivo processado nessa pasta
+                if target_dir.exists() and any("_PROCESSADO" in f.name for f in target_dir.iterdir()):
+                    message = f"AVISO: A data {folder_name} já foi processada anteriormente. Limpe a pasta manualmente se desejar reimportar."
+                    return render_template_string(PAGE, message=message)
+
+                # Se passou pela verificação, cria a pasta (mesmo que já exista, para garantir a estrutura), não altera o conteúdo se já tiver algo lá
                 target_dir.mkdir(parents=True, exist_ok=True)
 
                 # Extração rápida
@@ -127,8 +137,8 @@ def index():
 
                 message = (f"Arquivo recebido!\n"
                            f"Destino: RVTOOLS/{folder_name}\n"
-                           f"O banco de dados está sendo atualizado agora.\n"
-                           f"Fique de olho no terminal para a confirmação final.")
+                           f"O script de importação está sendo executado em background.\n"
+                           f"Print no Terminal do VS Code/WSL confirmará o sucesso ou falha da importação, além do tempo gasto após o término.")
 
             except Exception as e:
                 message = f"ERRO ao processar arquivo: {str(e)}"

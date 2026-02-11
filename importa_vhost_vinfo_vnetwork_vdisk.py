@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-
+# -*- coding: utf-8 -*
 import os
 import re
 import glob
@@ -9,7 +8,10 @@ from typing import Optional, Dict, Tuple, Any
 import pandas as pd
 import mysql.connector
 
-
+# Lembrar de passar essas configurações para arquivo .env ou variáveis de ambiente para segurança e flexibilidade, evitando hardcoding de credenciais e caminhos no código. 
+# O diretório raiz para as planilhas pode ser configurado via variável de ambiente PLAN_DIR, e as configurações do banco de dados também podem ser 
+# ajustadas via variáveis de ambiente para facilitar a adaptação a diferentes ambientes (desenvolvimento, produção, etc.). O script é projetado para ser 
+# executado em um ambiente controlado, onde acess ao banco de dados e aos arquivos é restrito
 # =========================
 # Configuração
 # =========================
@@ -360,7 +362,7 @@ def importar_arquivo(file_path: str):
                 network_vsdk = to_str(row['vNetworkVISDKServer'])
 
                 if not network_vm_name or not network_vsdk:
-                    print(f"[AVISO] Registro de rede pulado por falta de 'vNetworkVMName' ou 'vNetworkVISDKServer'.")
+                    print("[AVISO] Registro de rede pulado por falta de 'vNetworkVMName' ou 'vNetworkVISDKServer'.")
                     continue
 
                 network_attrs = {col: row[col] for col in VNETWORK_COLS}
@@ -372,13 +374,13 @@ def importar_arquivo(file_path: str):
 
         # 4) Discos
         if not vdisk_df.empty:
-            print(f"[INFO] Processando {len(vdisk_df)} registros da aba vDisk...")
+            print("[INFO] Processando {len(vdisk_df)} registros da aba vDisk...")
             for _, row in vdisk_df.iterrows():
                 disk_vm_name = to_str(row['vDiskVMName'])
                 disk_vsdk = to_str(row['vDiskVISDKServer'])
 
                 if not disk_vm_name or not disk_vsdk:
-                    print(f"[AVISO] Registro de disco pulado por falta de 'vDiskVMName' ou 'vDiskVISDKServer'.")
+                    print("[AVISO] Registro de disco pulado por falta de 'vDiskVMName' ou 'vDiskVISDKServer'.")
                     continue
 
                 disk_attrs = {col: row[col] for col in VDISK_COLS}
@@ -423,6 +425,6 @@ def processar_planilhas(diretorio_raiz: str):
 # Execução
 # =========================
 if __name__ == "__main__":
-    diretorio = os.getenv('PLAN_DIR', 'C:/Users/diego.gervasio/Downloads/RVTOOLS')
+    diretorio = os.getenv('PLAN_DIR', 'C:/Users/diego.gervasio/Downloads/IMPORTADOR-RVTOOLS/RVTOOLS')
     processar_planilhas(diretorio)
     print("\nProcessamento finalizado.")

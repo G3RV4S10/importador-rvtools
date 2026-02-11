@@ -11,9 +11,10 @@ from flask import Flask, render_template_string, request
 
 # Configurações de diretório
 BASE_DIR = Path(__file__).resolve().parent
-RVTOOLS_ROOT = BASE_DIR / "RVTOOLS"
-IMPORT_SCRIPT = BASE_DIR / "importa_vhost_vinfo_vnetwork_vdisk.py"
-PYTHON_BIN = sys.executable
+RVTOOLS_ROOT = BASE_DIR / "RVTOOLS" # Pasta central solicitada - onde os arquivos serão organizados por data
+ALLOWED_EXT = {".zip"} # Extensão permitida
+IMPORT_SCRIPT = BASE_DIR / "importa_vhost_vinfo_vnetwork_vdisk.py" # Script de importação que será chamado em background
+PYTHON_BIN = sys.executable # Caminho do interpretador Python atual (garante compatibilidade com ambientes virtuais)
 
 app = Flask(__name__)
 
@@ -94,7 +95,7 @@ def run_import_process(target_folder: Path):
         print(f"[TEMPO TOTAL]: {duration:.2f} segundos")
         
         if result.returncode == 0:
-            print(f"[STATUS]: Sucesso! Dados inseridos no MySQL.")
+            print("[STATUS]: Sucesso! Dados inseridos no MySQL.")
         else:
             print(f"[STATUS]: O script retornou um erro (Código {result.returncode})")
             print(f"[ERRO]: {result.stderr}")
@@ -113,6 +114,11 @@ def index():
                 folder_name = extract_date_from_filename(file.filename)
                 target_dir = RVTOOLS_ROOT / folder_name
                 target_dir.mkdir(parents=True, exist_ok=True)
+                
+                # Verifica se já existe algum arquivo processado nessa pasta
+                if target_dir.exists() and any("_PROCESSADO" in f.name for f in target_dir.iterdir()):
+                    message = f"AVISO: A data {folder_name} já foi processada anteriormente. Limpe a pasta manualmente se desejar reimportar."
+                    return render_template_string(PAGE, message=message)
 
                 # Extração rápida
                 with tempfile.TemporaryDirectory() as tmpdir:

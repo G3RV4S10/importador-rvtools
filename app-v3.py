@@ -108,7 +108,7 @@ def index():
                 folder_name = extract_date_from_filename(file.filename)
                 target_dir = RVTOOLS_ROOT / folder_name
 
-                # Validação de arquivo já processado (Sua Solução 2)
+                # Validação de arquivo já processado
                 if target_dir.exists() and any("_PROCESSADO" in f.name for f in target_dir.iterdir()):
                     return render_template_string(PAGE, message=f"Aviso: A data {folder_name} já foi processada.")
 

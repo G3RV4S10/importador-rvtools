@@ -96,8 +96,11 @@ def run_import_process(target_folder: Path):
         
         if result.returncode == 0:
             print("[STATUS]: Sucesso! Dados inseridos no MySQL.")
+<<<<<<< HEAD
             # ver os print's do script de importação para detalhes do que foi processado
             print(f"[DETALHES]: {result.stdout}")
+=======
+>>>>>>> 988d2943a3eb714401135be7c2a8a4d658c11e04
         else:
             print(f"[STATUS]: O script retornou um erro (Código {result.returncode})")
             print(f"[ERRO]: {result.stderr}")
@@ -123,6 +126,11 @@ def index():
 
                 # Se passou pela verificação, cria a pasta (mesmo que já exista, para garantir a estrutura), não altera o conteúdo se já tiver algo lá
                 target_dir.mkdir(parents=True, exist_ok=True)
+                
+                # Verifica se já existe algum arquivo processado nessa pasta
+                if target_dir.exists() and any("_PROCESSADO" in f.name for f in target_dir.iterdir()):
+                    message = f"AVISO: A data {folder_name} já foi processada anteriormente. Limpe a pasta manualmente se desejar reimportar."
+                    return render_template_string(PAGE, message=message)
 
                 # Extração rápida
                 with tempfile.TemporaryDirectory() as tmpdir:

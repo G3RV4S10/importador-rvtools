@@ -12,7 +12,7 @@ from flask import Flask, render_template_string, request
 # Configurações de diretório
 BASE_DIR = Path(__file__).resolve().parent
 RVTOOLS_ROOT = BASE_DIR / "RVTOOLS" # Pasta central solicitada - onde os arquivos serão organizados por data
-ALLOWED_EXT = {".zip"} # Extensão permitida
+ALLOWED_EXT = {".zip"} # Extensão permitida, somente arquivos zipados dos relatórios do RVTools
 IMPORT_SCRIPT = BASE_DIR / "importa_vhost_vinfo_vnetwork_vdisk.py" # Script de importação que será chamado em background
 PYTHON_BIN = sys.executable # Caminho do interpretador Python atual (garante compatibilidade com ambientes virtuais)
 
@@ -27,11 +27,17 @@ PAGE = """
   <title>RVTools Dataprev - Background Importer</title>
   <style>
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 700px; margin: 40px auto; background: #eef2f3; }
+
     .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+    
     h2 { color: #2c3e50; border-left: 5px solid #27ae60; padding-left: 15px; }
+    
     .status-msg { background: #d1ecf1; color: #0c5460; padding: 15px; border-radius: 6px; border: 1px solid #bee5eb; margin-top: 20px; }
+    
     .footer-info { font-size: 12px; color: #7f8c8d; margin-top: 15px; }
+    
     button { background: #2ecc71; color: white; border: none; padding: 12px 24px; cursor: pointer; border-radius: 6px; font-weight: bold; width: 100%; }
+    
     button:hover { background: #27ae60; }
   </style>
 </head>
@@ -64,8 +70,8 @@ def extract_date_from_filename(filename: str) -> str:
     if not match:
         from datetime import datetime
         return datetime.now().strftime('%y%m%d')
-    dia, mes, _, ano_curto = match.groups()
-    return f"{ano_curto}{mes}{dia}"
+    dia, mes, _, ano_curto = match.groups() # Reorganiza para formato YYMMDD - o ano vem por último no nome do arquivo, mas quero ele no início da pasta
+    return f"{ano_curto}{mes}{dia}" # Formato final da pasta: RVTOOLS/YYMMDD
 
 def run_import_process(target_folder: Path):
     """Executa a importação e loga o resultado final no console."""

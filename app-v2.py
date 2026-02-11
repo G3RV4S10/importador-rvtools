@@ -96,11 +96,9 @@ def run_import_process(target_folder: Path):
         
         if result.returncode == 0:
             print("[STATUS]: Sucesso! Dados inseridos no MySQL.")
-<<<<<<< HEAD
             # ver os print's do script de importação para detalhes do que foi processado
             print(f"[DETALHES]: {result.stdout}")
-=======
->>>>>>> 988d2943a3eb714401135be7c2a8a4d658c11e04
+
         else:
             print(f"[STATUS]: O script retornou um erro (Código {result.returncode})")
             print(f"[ERRO]: {result.stderr}")
